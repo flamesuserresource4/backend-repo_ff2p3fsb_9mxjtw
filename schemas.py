@@ -1,48 +1,103 @@
 """
-Database Schemas
+Database Schemas for Sanctuary Builder
 
-Define your MongoDB collection schemas here using Pydantic models.
-These schemas are used for data validation in your application.
+Each Pydantic model corresponds to a MongoDB collection with the collection
+name being the lowercase of the class name, e.g. User -> "user".
 
-Each Pydantic model represents a collection in your database.
-Model name is converted to lowercase for the collection name:
-- User -> "user" collection
-- Product -> "product" collection
-- BlogPost -> "blogs" collection
+This app supports bilingual content (English + Chinese). For text fields that
+are shown to end users, provide both language variants when applicable.
 """
 
 from pydantic import BaseModel, Field
-from typing import Optional
+from typing import Optional, List, Dict, Any
 
-# Example schemas (replace with your own):
+# =============== CORE USER & IDENTITY ===============
 
 class User(BaseModel):
+    """User profile and settings
+    Collection: user
     """
-    Users collection schema
-    Collection name: "user" (lowercase of class name)
-    """
-    name: str = Field(..., description="Full name")
     email: str = Field(..., description="Email address")
-    address: str = Field(..., description="Address")
-    age: Optional[int] = Field(None, ge=0, le=120, description="Age in years")
-    is_active: bool = Field(True, description="Whether user is active")
+    name: str = Field(..., description="Display name")
+    avatar_url: Optional[str] = Field(None, description="Profile image URL")
+    locale: str = Field("en", description="Preferred language: en or zh")
+    is_active: bool = Field(True)
+    roles: List[str] = Field(default_factory=lambda: ["user"], description="Roles such as user, admin")
+
+# =============== DEVOTIONAL CONTENT ===============
+
+class Devotional(BaseModel):
+    """Daily devotional content for a specific calendar date
+    Collection: devotional
+    """
+    day: str = Field(..., description="Calendar day for this devotional (YYYY-MM-DD)")
+    title_en: str = Field(...)
+    title_zh: str = Field(...)
+    passage_en: Optional[str] = Field(None, description="Scripture or theme (EN)")
+    passage_zh: Optional[str] = Field(None, description="Scripture or theme (ZH)")
+    content_en: str = Field(..., description="Main devotional text (EN)")
+    content_zh: str = Field(..., description="Main devotional text (ZH)")
+    reflection_prompt_en: Optional[str] = Field(None)
+    reflection_prompt_zh: Optional[str] = Field(None)
+
+# =============== PROGRESS, STREAKS, REWARDS ===============
+
+class Progress(BaseModel):
+    """User progress per day
+    Collection: progress
+    """
+    user_id: str = Field(...)
+    day: str = Field(..., description="YYYY-MM-DD")
+    completed: bool = Field(True)
+    points_earned: int = Field(0)
+
+class Reward(BaseModel):
+    """Earned rewards/badges
+    Collection: reward
+    """
+    user_id: str = Field(...)
+    reward_type: str = Field(..., description="badge, milestone, coupon, etc.")
+    name_en: str = Field(...)
+    name_zh: str = Field(...)
+    description_en: Optional[str] = Field(None)
+    description_zh: Optional[str] = Field(None)
+    points: int = Field(0)
+
+# =============== MARKETPLACE ===============
 
 class Product(BaseModel):
+    """Digital marketplace item
+    Collection: product
     """
-    Products collection schema
-    Collection name: "product" (lowercase of class name)
+    sku: str = Field(..., description="Unique product code")
+    title_en: str = Field(...)
+    title_zh: str = Field(...)
+    description_en: Optional[str] = Field(None)
+    description_zh: Optional[str] = Field(None)
+    price: float = Field(..., ge=0)
+    currency: str = Field("USD")
+    categories: List[str] = Field(default_factory=list)
+    media_urls: List[str] = Field(default_factory=list, description="Images or previews")
+    attributes: Dict[str, str] = Field(default_factory=dict)
+    status: str = Field("active", description="active, hidden, archived")
+
+class Order(BaseModel):
+    """Simple order record for digital goods
+    Collection: order
     """
-    title: str = Field(..., description="Product title")
-    description: Optional[str] = Field(None, description="Product description")
-    price: float = Field(..., ge=0, description="Price in dollars")
-    category: str = Field(..., description="Product category")
-    in_stock: bool = Field(True, description="Whether product is in stock")
+    user_id: str = Field(...)
+    items: List[Dict[str, Any]] = Field(..., description="List of {sku, qty, price}")
+    total_amount: float = Field(..., ge=0)
+    currency: str = Field("USD")
+    status: str = Field("pending", description="pending, paid, refunded, cancelled")
 
-# Add your own schemas here:
-# --------------------------------------------------
+# =============== COMMUNITY (FUTURE) ===============
 
-# Note: The Flames database viewer will automatically:
-# 1. Read these schemas from GET /schema endpoint
-# 2. Use them for document validation when creating/editing
-# 3. Handle all database operations (CRUD) directly
-# 4. You don't need to create any database endpoints!
+class Post(BaseModel):
+    """Optional community post structure
+    Collection: post
+    """
+    user_id: str = Field(...)
+    content: str = Field(...)
+    locale: str = Field("en")
+    tags: List[str] = Field(default_factory=list)

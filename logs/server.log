@@ -1,0 +1,23 @@
+INFO:     Will watch for changes in these directories: ['/home/workspace']
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+INFO:     Started reloader process [355] using StatReload
+INFO:     Started server process [357]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     172.20.0.1:59204 - "HEAD / HTTP/1.1" 405 Method Not Allowed
+INFO:     172.20.0.1:59216 - "GET /api/devotionals/today?locale=en HTTP/1.1" 200 OK
+INFO:     172.20.0.1:59216 - "GET /api/devotionals/today?locale=en HTTP/1.1" 200 OK
+INFO:     172.20.0.1:59220 - "GET /api/products?locale=en HTTP/1.1" 200 OK
+INFO:     172.20.0.1:59222 - "GET /api/progress/stats?user_id=demo-user-1 HTTP/1.1" 200 OK
+INFO:     172.20.0.1:59220 - "GET /api/products?locale=en HTTP/1.1" 200 OK
+INFO:     172.20.0.1:59222 - "GET /api/progress/stats?user_id=demo-user-1 HTTP/1.1" 200 OK
+INFO:     172.20.0.1:33314 - "GET /api/devotionals/today?locale=en HTTP/1.1" 200 OK
+INFO:     172.20.0.1:33328 - "GET /api/products?locale=en HTTP/1.1" 200 OK
+INFO:     172.20.0.1:33336 - "GET /api/progress/stats?user_id=demo-user-1 HTTP/1.1" 200 OK
+INFO:     172.20.0.1:33314 - "GET /api/devotionals/today?locale=en HTTP/1.1" 200 OK
+INFO:     172.20.0.1:33328 - "GET /api/products?locale=en HTTP/1.1" 200 OK
+INFO:     172.20.0.1:33336 - "GET /api/progress/stats?user_id=demo-user-1 HTTP/1.1" 200 OK
+INFO:     172.20.0.1:42718 - "GET /api/devotionals/today?locale=zh HTTP/1.1" 200 OK
+INFO:     172.20.0.1:42734 - "GET /api/products?locale=zh HTTP/1.1" 200 OK
+INFO:     172.20.0.1:42734 - "GET /api/devotionals/today?locale=en HTTP/1.1" 200 OK
+INFO:     172.20.0.1:42718 - "GET /api/products?locale=en HTTP/1.1" 200 OK
